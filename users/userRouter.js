@@ -85,12 +85,32 @@ async function validateUserId( req, res, next ) {
   };
 };
 
-function validateUser( req, res, next ) {
-  // do your magic!
+async function validateUser( req, res, next ) {
+  try {
+    const { user } = req.body;
+    if ( user ){
+      next();
+    } else {
+      res.status(400).json({ message: "invalid user" });
+    };
+  } catch {
+    res.status(500).json({ message: "internal server error" });
+  };
 }
 
-function validatePost( req, res, next ) {
-  // do your magic!
+async function validatePost( req, res, next ) {
+  try {
+    const { id, text } = req.body;
+    if ( id && text ){ // body is there
+      next();
+    } else if (!text) {
+      res.status(400).json({ message: "missing required text field" }); // text missing, id is there
+    } else {
+      res.status(400).json({ message: "missing post data" }); // body and id missing
+    };
+  } catch {
+    res.status(500).json({ message: "internal server error" });
+  };
 }
 
 module.exports = router;
